@@ -1,23 +1,34 @@
-[![Build Status](https://travis-ci.com/jsphuebner/stm32-sine.svg?branch=master)](https://travis-ci.com/jsphuebner/stm32-sine)
+# stm32-template
+This project can be a starting point to your own STM32 project. It contains facilities that make software
+development easier and ensures compatibility with the esp8266 web interface.
 
-# stm32-sine
-Main firmware of the Huebner inverter project
-This firmware runs on any revision of the "Huebner" hardware https://github.com/jsphuebner/inverter-hardware as well as any derivatives as the Open Source Tesla controller https://github.com/damienmaguire
+It provides
+- Mostly object oriented syntax
+- A simple, hardware based scheduler for recurring tasks
+- Analog input management, fully independent with DMA
+- Digital I/O management
+- CAN library supporting up to 2 CAN interfaces
+  - hardware filter support
+  - No limitation on number of messages
+  - Automatic mapping from/to parameter module
+  - CAN Open SDO support
+  - Fully interrupt driven
+- Error memory
+- ligthweight fixed point arithmetic
+- string functions to be independent of stdlib
+- Parameter module that interfaces to esp8266 web GUI
+- Saving parameters to flash
+- Serial terminal with custom commands and DMA transfer
+- Mathematical functions (sin/cos, arctan, square root)
+- PI controller class
+- Functions for field oriented control
 
-# Goals
-The main goal of this firmware is well-drivable control of electric 3-phase motors with as little software complexity as possible. We do not rely on virtual control methods such as FOC (field oriented control) or DTC (direct torque control). This makes tuning more intuitive, as only real physical quantities are parametrized.
-The same principle is applied to the hardware design, keeping component count low and therefor minimize cost and failure modes.
-To fine tune the driving experience and adapt to different flavours of power stages, over 60 parameters can be customized.
-
-# Motor Control Concept
-The idea is that the dynamics of any 3-phase asynchronous motor are controlled by the amplitude of the sythesized sine wave and its frequency offset to the rotor speed (slip). 
-For 3-phase synchronous motors a similar control method did not prove practical. Therefor a FOC version of the software has been created. It shares 95% of the code.
-
-# Inverter charging
-A unique feature of this software is to re-purpose the drivetrain hardware as a programmable battery charger. One of the motor phase windings is being used as a high current capable inductor and one of the phase switches as a buck or boost converter. This has practically proven to replace a separate charging unit and further reduce complexity of electric vehicles.
-
-# Further reading
-A comprehensive guide to the Huebner inverter system can be found here: https://openinverter.org/docs
+# OTA (over the air upgrade)
+The firmware is linked to leave the 4 kb of flash unused. Those 4 kb are reserved for the bootloader
+that you can find here: https://github.com/jsphuebner/tumanako-inverter-fw-bootloader
+When flashing your device for the first time you must first flash that bootloader. After that you can
+use the ESP8266 module and its web interface to upload your actual application firmware.
+The web interface is here: https://github.com/jsphuebner/esp8266-web-interface
 
 # Compiling
 You will need the arm-none-eabi toolchain: https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
@@ -25,18 +36,25 @@ On Ubuntu type
 
 `sudo apt-get install git gcc-arm-none-eabi`
 
-The only external depedency is libopencm3 which I forked. You can download and build this dependency by typing
+The only external depedencies are libopencm3 and libopeninv. You can download and build these dependencies by typing
 
 `make get-deps`
 
-Now you can compile stm32-sine by typing
+Now you can compile stm32-<yourname> by typing
 
 `make`
 
-or
+And upload it to your board using a JTAG/SWD adapter, the updater.py script or the esp8266 web interface.
 
-`CONTROL=FOC make`
+# Editing
+The repository provides a project file for Code::Blocks, a rather leightweight IDE for cpp code editing.
+For building though, it just executes the above command. Its build system is not actually used.
+Consequently you can use your favority IDE or editor for editing files.
 
-to build the FOC version for synchronous motors.
+# Adding classes or modules
+As your firmware grows you probably want to add classes. To do so, put the header file in include/ and the 
+source file in src/ . Then add your module to the object list in Makefile that starts in line 43 with .o
+extension. So if your files are called "mymodule.cpp" and "mymodule.h" you add "mymodule.o" to the list.
 
-And upload it to your board using a JTAG/SWD adapter, the updater.py script or the esp8266 web interface
+When changing a header file the build system doesn't always detect this, so you have to "make clean" and
+then make. This is especially important when editing the "*_prj.h" files.
