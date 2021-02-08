@@ -102,6 +102,8 @@ extern "C" void tim2_isr(void)
 
 extern "C" int main(void)
 {
+   extern const TERM_CMD termCmds[];
+
    clock_setup(); //Must always come first
    rtc_setup();
    ANA_IN_CONFIGURE(ANA_IN_LIST);
@@ -109,12 +111,9 @@ extern "C" int main(void)
    AnaIn::Start(); //Starts background ADC conversion via DMA
    write_bootloader_pininit(); //Instructs boot loader to initialize certain pins
 
-   usart_setup(); //Initializes UART3 with DMA for use by the terminal (see below)
    tim_setup(); //Sample init of a timer
    nvic_setup(); //Set up some interrupts
-   term_Init(); //Initialize terminal
    parm_load(); //Load stored parameters
-   parm_Change(Param::PARAM_LAST); //Call callback one for general parameter propagation
 
    Stm32Scheduler s(TIM2); //We never exit main so it's ok to put it on stack
    scheduler = &s;
@@ -122,6 +121,9 @@ extern "C" int main(void)
    Can c(CAN1, (Can::baudrates)Param::GetInt(Param::canspeed));
    //store a pointer for easier access
    can = &c;
+
+   //This is all we need to do to set up a terminal on USART3
+   Terminal t(USART3, termCmds);
 
    //Up to four tasks can be added to each timer scheduler
    //AddTask takes a function pointer and a calling interval in milliseconds.
@@ -133,12 +135,14 @@ extern "C" int main(void)
 
    //backward compatibility, version 4 was the first to support the "stream" command
    Param::SetInt(Param::version, 4);
+   parm_Change(Param::PARAM_LAST); //Call callback one for general parameter propagation
 
    //Now all our main() does is running the terminal
    //All other processing takes place in the scheduler or other interrupt service routines
    //The terminal has lowest priority, so even loading it down heavily will not disturb
    //our more important processing routines.
-   term_Run();
+   while(1)
+      t.Run();
 
    return 0;
 }

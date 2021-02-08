@@ -33,12 +33,12 @@
 #include "errormessage.h"
 #include "terminalcommands.h"
 
-static void LoadDefaults(char *arg);
-static void Help(char *arg);
-static void PrintSerial(char *arg);
-static void PrintErrors(char *arg);
+static void LoadDefaults(Terminal* term, char *arg);
+static void Help(Terminal* term, char *arg);
+static void PrintSerial(Terminal* term, char *arg);
+static void PrintErrors(Terminal* term, char *arg);
 
-extern "C" const TERM_CMD TermCmds[] =
+extern "C" const TERM_CMD termCmds[] =
 {
   { "set", TerminalCommands::ParamSet },
   { "get", TerminalCommands::ParamGet },
@@ -49,7 +49,6 @@ extern "C" const TERM_CMD TermCmds[] =
   { "save", TerminalCommands::SaveParameters },
   { "load", TerminalCommands::LoadParameters },
   { "reset", TerminalCommands::Reset },
-  { "fastuart", TerminalCommands::FastUart },
   { "defaults", LoadDefaults },
   { "help", Help },
   { "serial", PrintSerial },
@@ -57,29 +56,31 @@ extern "C" const TERM_CMD TermCmds[] =
   { NULL, NULL }
 };
 
-static void LoadDefaults(char *arg)
+static void LoadDefaults(Terminal* term, char *arg)
 {
    arg = arg;
    Param::LoadDefaults();
-   printf("Defaults loaded\r\n");
+   fprintf(term, "Defaults loaded\r\n");
 }
 
-static void PrintErrors(char *arg)
+static void PrintErrors(Terminal* term, char *arg)
 {
    arg = arg;
+   term = term;
    ErrorMessage::PrintAllErrors();
 }
 
-static void PrintSerial(char *arg)
+static void PrintSerial(Terminal* term, char *arg)
 {
    arg = arg;
-   printf("%X%X%X\r\n", DESIG_UNIQUE_ID2, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID0);
+   fprintf(term, "%X%X%X\r\n", DESIG_UNIQUE_ID2, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID0);
 }
 
-static void Help(char *arg)
+static void Help(Terminal* term, char *arg)
 {
    //If you want you could print some instructions here
    //But since the terminal is mostly used by the web interface
    //it makes limited sense.
    arg = arg;
+   term = term;
 }
