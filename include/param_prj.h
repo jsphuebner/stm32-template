@@ -50,7 +50,7 @@
 //Next value Id: 2005
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
-    PARAM_ENTRY(CAT_COMM,    canspeed,    CANSPEEDS, 0,      3,      1,      1   ) \
+    PARAM_ENTRY(CAT_COMM,    canspeed,    CANSPEEDS, 0,      4,      2,      1   ) \
     PARAM_ENTRY(CAT_COMM,    canperiod,   CANPERIODS,0,      1,      0,      2   ) \
     PARAM_ENTRY(CAT_TEST,    testparam,   "Hz",      -100,   1000,   0,      0   ) \
     VALUE_ENTRY(opmode,      OPMODES, 2000 ) \
@@ -62,7 +62,7 @@
 
 /***** Enum String definitions *****/
 #define OPMODES      "0=Off, 1=Run"
-#define CANSPEEDS    "0=250k, 1=500k, 2=800k, 3=1M"
+#define CANSPEEDS    "0=125k, 1=250k, 2=500k, 3=800k, 4=1M"
 #define CANPERIODS   "0=100ms, 1=10ms"
 #define CAT_TEST     "Testing"
 #define CAT_COMM     "Communication"
@@ -72,7 +72,7 @@
 /***** enums ******/
 
 
-enum _canspeeds
+enum _canperiods
 {
    CAN_PERIOD_100MS = 0,
    CAN_PERIOD_10MS,

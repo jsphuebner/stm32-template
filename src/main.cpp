@@ -52,9 +52,9 @@ static void Ms100Task(void)
    //at least every 2s or otherwise the controller is hard reset.
    iwdg_reset();
    //Calculate CPU load. Don't be surprised if it is zero.
-   s32fp cpuLoad = FP_FROMINT(scheduler->GetCpuLoad());
+   float cpuLoad = scheduler->GetCpuLoad();
    //This sets a fixed point value WITHOUT calling the parm_Change() function
-   Param::SetFlt(Param::cpuload, cpuLoad / 10);
+   Param::SetFloat(Param::cpuload, cpuLoad / 10);
 
    //If we chose to send CAN messages every 100 ms, do this here.
    if (Param::GetInt(Param::canperiod) == CAN_PERIOD_100MS)
@@ -83,7 +83,7 @@ static void Ms10Task(void)
 }
 
 /** This function is called when the user changes a parameter */
-extern void parm_Change(Param::PARAM_NUM paramNum)
+void Param::Change(Param::PARAM_NUM paramNum)
 {
    switch (paramNum)
    {
@@ -135,7 +135,7 @@ extern "C" int main(void)
 
    //backward compatibility, version 4 was the first to support the "stream" command
    Param::SetInt(Param::version, 4);
-   parm_Change(Param::PARAM_LAST); //Call callback one for general parameter propagation
+   Param::Change(Param::PARAM_LAST); //Call callback one for general parameter propagation
 
    //Now all our main() does is running the terminal
    //All other processing takes place in the scheduler or other interrupt service routines
