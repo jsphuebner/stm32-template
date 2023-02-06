@@ -23,6 +23,7 @@
 #include <libopencm3/stm32/can.h>
 #include <libopencm3/stm32/iwdg.h>
 #include "stm32_can.h"
+#include "canmap.h"
 #include "terminal.h"
 #include "params.h"
 #include "hwdefs.h"
@@ -34,9 +35,11 @@
 #include "errormessage.h"
 #include "printf.h"
 #include "stm32scheduler.h"
+#include "terminalcommands.h"
 
 static Stm32Scheduler* scheduler;
-static Can* can;
+static CanHardware* can;
+static CanMap* canMap;
 
 //sample 100ms task
 static void Ms100Task(void)
@@ -58,7 +61,7 @@ static void Ms100Task(void)
 
    //If we chose to send CAN messages every 100 ms, do this here.
    if (Param::GetInt(Param::canperiod) == CAN_PERIOD_100MS)
-      can->SendAll();
+      canMap->SendAll();
 }
 
 //sample 10 ms task
@@ -79,7 +82,7 @@ static void Ms10Task(void)
 
    //If we chose to send CAN messages every 10 ms, do this here.
    if (Param::GetInt(Param::canperiod) == CAN_PERIOD_10MS)
-      can->SendAll();
+      canMap->SendAll();
 }
 
 /** This function is called when the user changes a parameter */
@@ -105,7 +108,7 @@ extern "C" int main(void)
    extern const TERM_CMD termCmds[];
 
    clock_setup(); //Must always come first
-   rtc_setup();
+   //rtc_setup();
    ANA_IN_CONFIGURE(ANA_IN_LIST);
    DIG_IO_CONFIGURE(DIG_IO_LIST);
    AnaIn::Start(); //Starts background ADC conversion via DMA
@@ -118,12 +121,15 @@ extern "C" int main(void)
    Stm32Scheduler s(TIM2); //We never exit main so it's ok to put it on stack
    scheduler = &s;
    //Initialize CAN1, including interrupts. Clock must be enabled in clock_setup()
-   Can c(CAN1, (Can::baudrates)Param::GetInt(Param::canspeed));
+   Stm32Can c(CAN1, (CanHardware::baudrates)Param::GetInt(Param::canspeed));
+   CanMap cm(&c);
    //store a pointer for easier access
    can = &c;
+   canMap = &cm;
 
    //This is all we need to do to set up a terminal on USART3
    Terminal t(USART3, termCmds);
+   TerminalCommands::SetCanMap(canMap);
 
    //Up to four tasks can be added to each timer scheduler
    //AddTask takes a function pointer and a calling interval in milliseconds.
