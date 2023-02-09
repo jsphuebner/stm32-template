@@ -38,10 +38,15 @@
 		<Unit filename="include/hwinit.h" />
 		<Unit filename="include/param_prj.h" />
 		<Unit filename="libopeninv/include/anain.h" />
+		<Unit filename="libopeninv/include/canhardware.h" />
+		<Unit filename="libopeninv/include/canmap.h" />
+		<Unit filename="libopeninv/include/crc8.h" />
+		<Unit filename="libopeninv/include/delay.h" />
 		<Unit filename="libopeninv/include/digio.h" />
 		<Unit filename="libopeninv/include/errormessage.h" />
 		<Unit filename="libopeninv/include/foc.h" />
 		<Unit filename="libopeninv/include/fu.h" />
+		<Unit filename="libopeninv/include/linbus.h" />
 		<Unit filename="libopeninv/include/my_fp.h" />
 		<Unit filename="libopeninv/include/my_math.h" />
 		<Unit filename="libopeninv/include/my_string.h" />
@@ -56,10 +61,14 @@
 		<Unit filename="libopeninv/include/terminal.h" />
 		<Unit filename="libopeninv/include/terminalcommands.h" />
 		<Unit filename="libopeninv/src/anain.cpp" />
+		<Unit filename="libopeninv/src/canhardware.cpp" />
+		<Unit filename="libopeninv/src/canmap.cpp" />
+		<Unit filename="libopeninv/src/crc8.cpp" />
 		<Unit filename="libopeninv/src/digio.cpp" />
 		<Unit filename="libopeninv/src/errormessage.cpp" />
 		<Unit filename="libopeninv/src/foc.cpp" />
 		<Unit filename="libopeninv/src/fu.cpp" />
+		<Unit filename="libopeninv/src/linbus.cpp" />
 		<Unit filename="libopeninv/src/my_fp.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -69,9 +78,7 @@
 		<Unit filename="libopeninv/src/param_save.cpp" />
 		<Unit filename="libopeninv/src/params.cpp" />
 		<Unit filename="libopeninv/src/picontroller.cpp" />
-		<Unit filename="libopeninv/src/printf.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="libopeninv/src/printf.cpp" />
 		<Unit filename="libopeninv/src/sine_core.cpp" />
 		<Unit filename="libopeninv/src/stm32_can.cpp" />
 		<Unit filename="libopeninv/src/stm32scheduler.cpp" />

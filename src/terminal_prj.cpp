@@ -73,7 +73,7 @@ static void PrintErrors(Terminal* term, char *arg)
 static void PrintSerial(Terminal* term, char *arg)
 {
    arg = arg;
-   fprintf(term, "%X%X%X\r\n", DESIG_UNIQUE_ID2, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID0);
+   fprintf(term, "%08X:%08X:%08X\r\n", DESIG_UNIQUE_ID2, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID0);
 }
 
 static void Help(Terminal* term, char *arg)

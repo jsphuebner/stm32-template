@@ -148,7 +148,17 @@ extern "C" int main(void)
    //The terminal has lowest priority, so even loading it down heavily will not disturb
    //our more important processing routines.
    while(1)
+   {
+      char c = 0;
       t.Run();
+      if (canMap->StartPrintingJson())
+      {
+         TerminalCommands::PrintParamsJson(canMap, &c);
+         canMap->SignalPrintComplete();
+      }
+
+   }
+
 
    return 0;
 }
