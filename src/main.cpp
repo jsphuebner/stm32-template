@@ -37,6 +37,8 @@
 #include "stm32scheduler.h"
 #include "terminalcommands.h"
 
+#define PRINT_JSON 0
+
 static Stm32Scheduler* scheduler;
 static CanHardware* can;
 static CanMap* canMap;
@@ -151,12 +153,11 @@ extern "C" int main(void)
    {
       char c = 0;
       t.Run();
-      if (canMap->StartPrintingJson())
+      if (canMap->GetPrintRequest() == PRINT_JSON)
       {
          TerminalCommands::PrintParamsJson(canMap, &c);
          canMap->SignalPrintComplete();
       }
-
    }
 
 
