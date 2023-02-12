@@ -110,7 +110,7 @@ extern "C" int main(void)
    extern const TERM_CMD termCmds[];
 
    clock_setup(); //Must always come first
-   //rtc_setup();
+   rtc_setup();
    ANA_IN_CONFIGURE(ANA_IN_LIST);
    DIG_IO_CONFIGURE(DIG_IO_LIST);
    AnaIn::Start(); //Starts background ADC conversion via DMA
