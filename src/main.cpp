@@ -37,6 +37,7 @@
 #include "printf.h"
 #include "stm32scheduler.h"
 #include "terminalcommands.h"
+#include "sdocommands.h"
 
 #define PRINT_JSON 0
 
@@ -135,6 +136,8 @@ extern "C" int main(void)
    //This is all we need to do to set up a terminal on USART3
    Terminal t(USART3, termCmds);
    TerminalCommands::SetCanMap(canMap);
+   //Tell SDO class which CAN map to operate on
+   SdoCommands::SetCanMap(&cm);
 
    //Up to four tasks can be added to each timer scheduler
    //AddTask takes a function pointer and a calling interval in milliseconds.
@@ -155,10 +158,19 @@ extern "C" int main(void)
    while(1)
    {
       char c = 0;
+      CanSdo::SdoFrame* sdoFrame = sdo.GetPendingUserspaceSdo();
+
       t.Run();
+
       if (sdo.GetPrintRequest() == PRINT_JSON)
       {
          TerminalCommands::PrintParamsJson(&sdo, &c);
+      }
+
+      if (0 != sdoFrame)
+      {
+         SdoCommands::ProcessStandardCommands(sdoFrame);
+         sdo.SendSdoReply(sdoFrame);
       }
    }
 
